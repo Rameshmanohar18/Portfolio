@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import './Footer.css';
 
 const SOCIAL_LINKS = [
@@ -15,6 +16,23 @@ const NAV_LINKS = [
 ];
 
 export default function Footer() {
+  const [launched, setLaunched] = useState(false);
+  const [visible, setVisible]   = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const handleRocket = () => {
+    setLaunched(true);
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => setLaunched(false), 1200);
+    }, 400);
+  };
+
   return (
     <footer className="footer">
       <div className="footer__glow" />
@@ -80,6 +98,16 @@ export default function Footer() {
           </p>
         </div>
       </div>
+
+      {/* Rocket back-to-top */}
+      <button
+        className={`rocket-btn ${visible ? 'rocket-btn--visible' : ''} ${launched ? 'rocket-btn--launched' : ''}`}
+        onClick={handleRocket}
+        aria-label="Back to top"
+        title="Back to top"
+      >
+        🚀
+      </button>
     </footer>
   );
 }

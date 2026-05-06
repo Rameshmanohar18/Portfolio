@@ -21,7 +21,8 @@ function NodeCanvas() {
   const canvasRef = useRef(null);
   useEffect(() => {
     const canvas = canvasRef.current;
-    const ctx    = canvas.getContext('2d');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     let raf;
     const resize = () => {
       canvas.width  = canvas.offsetWidth;
@@ -32,38 +33,35 @@ function NodeCanvas() {
 
     const N = 28;
     const nodes = Array.from({ length: N }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
-      r: Math.random() * 2 + 1.5,
+      r:  Math.random() * 2 + 1.5,
     }));
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      /* move */
       nodes.forEach(n => {
         n.x += n.vx; n.y += n.vy;
         if (n.x < 0 || n.x > canvas.width)  n.vx *= -1;
         if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
       });
-      /* edges */
       for (let i = 0; i < N; i++) {
         for (let j = i + 1; j < N; j++) {
-          const dx = nodes[i].x - nodes[j].x;
-          const dy = nodes[i].y - nodes[j].y;
-          const dist = Math.sqrt(dx*dx + dy*dy);
+          const dx   = nodes[i].x - nodes[j].x;
+          const dy   = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 140) {
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.strokeStyle = `rgba(0,229,160,${0.12 * (1 - dist/140)})`;
+            ctx.strokeStyle = `rgba(0,229,160,${0.12 * (1 - dist / 140)})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
         }
       }
-      /* dots */
       nodes.forEach(n => {
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
@@ -73,21 +71,96 @@ function NodeCanvas() {
       raf = requestAnimationFrame(draw);
     };
     draw();
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+    };
   }, []);
   return <canvas ref={canvasRef} className="hero__canvas" />;
 }
 
+/* ── Typewriter hook ── */
+function useTypewriter(text, speed = 80, startDelay = 400) {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone]           = useState(false);
+  useEffect(() => {
+    setDisplayed('');
+    setDone(false);
+    let i = 0;
+    const delay = setTimeout(() => {
+      const id = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) { clearInterval(id); setDone(true); }
+      }, speed);
+      return () => clearInterval(id);
+    }, startDelay);
+    return () => clearTimeout(delay);
+  }, [text, speed, startDelay]);
+  return { displayed, done };
+}
+
+/* ── Terminal coding widget ── */
+const TERMINAL_LINES = [
+  { prefix: '$', text: 'git status',                      color: 'green'  },
+  { prefix: '>', text: 'On branch main — 3 files changed', color: 'muted'  },
+  { prefix: '$', text: 'npm run build',                   color: 'green'  },
+  { prefix: '>', text: 'Build successful ✓ 1.2s',         color: 'accent' },
+  { prefix: '$', text: 'git push origin main',            color: 'green'  },
+  { prefix: '>', text: 'Deployed to production 🚀',       color: 'accent' },
+];
+
+function TerminalWidget() {
+  const [lineIdx, setLineIdx] = useState(0);
+  const [visible, setVisible] = useState([]);
+
+  useEffect(() => {
+    if (lineIdx >= TERMINAL_LINES.length) {
+      const reset = setTimeout(() => { setLineIdx(0); setVisible([]); }, 3000);
+      return () => clearTimeout(reset);
+    }
+    const t = setTimeout(() => {
+      setVisible(v => [...v, TERMINAL_LINES[lineIdx]]);
+      setLineIdx(i => i + 1);
+    }, lineIdx === 0 ? 800 : 900);
+    return () => clearTimeout(t);
+  }, [lineIdx]);
+
+  return (
+    <div className="terminal-widget">
+      <div className="terminal-widget__bar">
+        <span className="terminal-widget__dot terminal-widget__dot--red" />
+        <span className="terminal-widget__dot terminal-widget__dot--yellow" />
+        <span className="terminal-widget__dot terminal-widget__dot--green" />
+        <span className="terminal-widget__title">ramesh@portfolio ~ </span>
+      </div>
+      <div className="terminal-widget__body">
+        {visible.map((line, i) => (
+          <div key={i} className={`terminal-widget__line terminal-widget__line--${line.color}`}>
+            <span className="terminal-widget__prefix">{line.prefix}</span>
+            <span>{line.text}</span>
+          </div>
+        ))}
+        <span className="terminal-widget__cursor">▋</span>
+      </div>
+    </div>
+  );
+}
+
+/* ── Main Hero component ── */
 export default function Hero() {
-  const [roleIdx, setRoleIdx]     = useState(0);
-  const [fade, setFade]           = useState(true);
-  const [progress, setProgress]   = useState(0);
-  const [paused, setPaused]       = useState(false);
-  const [tipIdx, setTipIdx]       = useState(null);
-  const pausedRef                 = useRef(false);
-  const photoWrapRef              = useRef(null);
+  const [roleIdx, setRoleIdx]   = useState(0);
+  const [fade, setFade]         = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [paused, setPaused]     = useState(false);
+  const [tipIdx, setTipIdx]     = useState(null);
+  const pausedRef               = useRef(false);
+  const photoWrapRef            = useRef(null);
 
   const INTERVAL = 3000;
+
+  const { displayed: typedFirst, done: firstDone } = useTypewriter('Ramesh',   90, 300);
+  const { displayed: typedLast }                   = useTypewriter('Manohar',  90, firstDone ? 100 : 99999);
 
   useEffect(() => { pausedRef.current = paused; }, [paused]);
 
@@ -101,7 +174,11 @@ export default function Hero() {
     const id = setInterval(() => {
       if (pausedRef.current) return;
       setFade(false);
-      setTimeout(() => { setRoleIdx(i => (i + 1) % ROLES.length); setProgress(0); setFade(true); }, 350);
+      setTimeout(() => {
+        setRoleIdx(i => (i + 1) % ROLES.length);
+        setProgress(0);
+        setFade(true);
+      }, 350);
     }, INTERVAL);
     return () => { clearInterval(id); clearInterval(prog); };
   }, [roleIdx]);
@@ -116,16 +193,15 @@ export default function Hero() {
     wrap.style.transform = `perspective(800px) rotateX(${y}deg) rotateY(${x}deg) scale(1.04)`;
   };
   const handlePhotoLeave = () => {
-    if (photoWrapRef.current)
-      photoWrapRef.current.style.transform = '';
+    if (photoWrapRef.current) photoWrapRef.current.style.transform = '';
   };
 
   /* Magnetic button effect */
   const handleMagnet = (e) => {
-    const btn = e.currentTarget;
+    const btn  = e.currentTarget;
     const rect = btn.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width  / 2;
-    const y = e.clientY - rect.top  - rect.height / 2;
+    const x    = e.clientX - rect.left - rect.width  / 2;
+    const y    = e.clientY - rect.top  - rect.height / 2;
     btn.style.transform = `translate(${x * 0.22}px, ${y * 0.22}px) scale(1.04)`;
   };
   const handleMagnetLeave = (e) => { e.currentTarget.style.transform = ''; };
@@ -147,17 +223,24 @@ export default function Hero() {
         <div className="hero__content">
           <div className="hero__badge">
             <span className="hero__badge-dot" />
-            Available for opportunities & Collaborations
+            Available for opportunities &amp; Collaborations
           </div>
 
+          {/* Typewriter name */}
           <h1 className="hero__name">
-            Ramesh<br />
-            <span className="hero__name-accent">Manohar</span>
+            <span>{typedFirst}</span>
+            {!firstDone && <span className="hero__cursor">|</span>}
+            {firstDone && (
+              <>
+                <br />
+                <span className="hero__name-accent">{typedLast}</span>
+                <span className="hero__cursor">|</span>
+              </>
+            )}
           </h1>
 
           {/* ── Role switcher ── */}
           <div className="hero__roles">
-            {/* Active role pill — hover pauses the cycle */}
             <div
               className={`hero__role-pill hero__role-pill--${ROLES[roleIdx].color} ${fade ? 'hero__role-pill--in' : 'hero__role-pill--out'} ${paused ? 'hero__role-pill--paused' : ''}`}
               onMouseEnter={() => setPaused(true)}
@@ -166,19 +249,20 @@ export default function Hero() {
               <span className="hero__role-icon">{ROLES[roleIdx].icon}</span>
               <span className="hero__role-label">{ROLES[roleIdx].label}</span>
               {paused && <span className="hero__role-pause-hint">⏸ hover to pause</span>}
-              {/* Progress bar */}
               <span className="hero__role-bar">
                 <span className="hero__role-bar-fill" style={{ width: `${progress}%` }} />
               </span>
             </div>
 
-            {/* Dot nav */}
             <div className="hero__role-dots">
               {ROLES.map((r, i) => (
                 <button
                   key={i}
                   className={`hero__role-dot hero__role-dot--${r.color} ${i === roleIdx ? 'hero__role-dot--active' : ''}`}
-                  onClick={() => { setFade(false); setTimeout(() => { setRoleIdx(i); setProgress(0); setFade(true); }, 350); }}
+                  onClick={() => {
+                    setFade(false);
+                    setTimeout(() => { setRoleIdx(i); setProgress(0); setFade(true); }, 350);
+                  }}
                   aria-label={r.label}
                   title={r.label}
                 />
@@ -187,10 +271,11 @@ export default function Hero() {
           </div>
 
           <p className="hero__desc">
-            Full Stack Developer with 2+ years building production-grade MERN stack applications — 
-            cutting load times by 35%, boosting API performance by 25%, and shipping features that 
-            scale. I turn complex requirements into clean, maintainable code and thrive in fast-moving 
-            teams where ownership and impact matter.
+            Full Stack Developer with 2+ years building production-grade MERN stack
+            applications — cutting load times by 35%, boosting API performance by 25%,
+            and shipping features that scale. I turn complex requirements into clean,
+            maintainable code and thrive in fast-moving teams where ownership and
+            impact matter.
           </p>
 
           <div className="hero__cta">
@@ -211,8 +296,8 @@ export default function Hero() {
           <div className="hero__stats">
             {STATS.map((s, i) => (
               <div
-                className={`hero__stat ${tipIdx === i ? 'hero__stat--hovered' : ''}`}
                 key={s.label}
+                className={`hero__stat ${tipIdx === i ? 'hero__stat--hovered' : ''}`}
                 onMouseEnter={() => setTipIdx(i)}
                 onMouseLeave={() => setTipIdx(null)}
               >
@@ -224,6 +309,8 @@ export default function Hero() {
               </div>
             ))}
           </div>
+
+          <TerminalWidget />
         </div>
 
         {/* ── Right: avatar ── */}
@@ -241,7 +328,6 @@ export default function Hero() {
             alt="Ramesh Manohar"
             className="hero__photo"
           />
-          {/* Floating tech badges */}
           <span className="hero__badge-float hero__badge-float--1">React.js</span>
           <span className="hero__badge-float hero__badge-float--2">Node.js</span>
           <span className="hero__badge-float hero__badge-float--3">Web3</span>

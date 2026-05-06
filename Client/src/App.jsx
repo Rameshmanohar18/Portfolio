@@ -25,7 +25,19 @@ function Wave({ to, flip }) {
 }
 
 export default function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme]       = useState(() => localStorage.getItem('theme') || 'dark');
+  const [scrollPct, setScrollPct] = useState(0);
+
+  /* ── Scroll progress ── */
+  useEffect(() => {
+    const onScroll = () => {
+      const el  = document.documentElement;
+      const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+      setScrollPct(Math.min(pct, 100));
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   /* ── Cursor spotlight ── */
   useEffect(() => {
@@ -46,6 +58,8 @@ export default function App() {
 
   return (
     <>
+      {/* Scroll progress bar */}
+      <div className="scroll-progress" style={{ width: `${scrollPct}%` }} />
       <div className="cursor-spotlight" />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
       <main>

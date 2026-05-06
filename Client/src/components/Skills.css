@@ -24,6 +24,7 @@
   perspective: 900px;
   height: 200px;
   cursor: pointer;
+  position: relative;        /* ← fixes absolute children escaping */
 }
 
 .skill-flip--flipped .skill-card--front { transform: rotateY(-180deg); }

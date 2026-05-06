@@ -142,7 +142,16 @@ section { padding: 6rem 0; }
   background-clip: text;
 }
 
-/* ===== CURSOR SPOTLIGHT ===== */
+/* ── Scroll progress bar ── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--blue));
+  z-index: 200;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 8px var(--accent);
+}
 :root {
   --cursor-x: 50vw;
   --cursor-y: 50vh;

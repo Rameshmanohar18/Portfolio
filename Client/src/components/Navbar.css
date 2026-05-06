@@ -104,6 +104,31 @@
 .navbar__links a:hover { color: var(--text); }
 .navbar__links a:hover::after { width: 100%; }
 
+/* Active section highlight */
+.navbar__links a.nav-link--active {
+  color: var(--accent);
+}
+.navbar__links a.nav-link--active::after {
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.nav-link__dot {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: dot-pulse 2s ease infinite;
+}
+
+.mobile-menu a.nav-link--active {
+  color: var(--accent);
+  background: rgba(0,229,160,0.06);
+  padding-left: 2rem;
+}
+
 /* Right side wrapper */
 .navbar__right {
   display: flex;
