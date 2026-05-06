@@ -13,8 +13,6 @@
   opacity: 0.3;
 }
 
-.skills-marquee { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 3rem; }
-
 .skills-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));

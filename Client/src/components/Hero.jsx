@@ -8,7 +8,7 @@ const STATS = [
   { num: '25%', label: 'API Speed ↑' },
 ];
 
-const ROLES = ['Full Stack Developer', 'MERN Stack Engineer', 'Web3 Builder'];
+const ROLES = ['Full Stack Developer', 'MERN Stack Engineer', 'Web3 Builder', 'Reactjs Developer', 'Nodejs Developer'];
 
 export default function Hero() {
   const [roleIdx, setRoleIdx] = useState(0);

@@ -11,8 +11,7 @@ const SKILLS = [
   { category: 'API Integration',icon: '🔗', items: ['Axios', 'REST API', 'Rapid API'] },
 ];
 
-const ROW1 = ['React.js','Node.js','TypeScript','MongoDB','Express.js','Socket.io','Redux Toolkit','Tailwind CSS','JavaScript','Web3.js','Solidity','REST API','React.js','Node.js','TypeScript','MongoDB','Express.js','Socket.io','Redux Toolkit','Tailwind CSS','JavaScript','Web3.js','Solidity','REST API'];
-const ROW2 = ['Git','GitHub','Postman','Jira','Vitest','Webpack','ESLint','MySQL','Firebase','Material UI','Axios','HTML5','CSS3','Prettier','Git','GitHub','Postman','Jira','Vitest','Webpack','ESLint','MySQL','Firebase','Material UI','Axios','HTML5','CSS3','Prettier'];
+
 
 export default function Skills() {
   const { ref, visible } = useReveal();
@@ -22,19 +21,6 @@ export default function Skills() {
         <div ref={ref}>
           <span className={`section-label reveal ${visible ? 'visible' : ''}`}>Expertise</span>
           <h2 className={`section-title reveal ${visible ? 'visible' : ''}`}>Technical Skills</h2>
-        </div>
-
-        <div className="skills-marquee">
-          <div className="marquee-wrapper">
-            <div className="marquee-track">
-              {ROW1.map((s,i) => <span key={i} className="marquee-tag marquee-tag--green">{s}</span>)}
-            </div>
-          </div>
-          <div className="marquee-wrapper">
-            <div className="marquee-track marquee-track--rev">
-              {ROW2.map((s,i) => <span key={i} className="marquee-tag marquee-tag--purple">{s}</span>)}
-            </div>
-          </div>
         </div>
 
         <div className="skills-grid">
