@@ -65,6 +65,13 @@
   background-clip: text;
 }
 
+[data-theme="light"] .footer__logo-dot {
+  background: linear-gradient(135deg, var(--muted), #8080b0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .footer__tagline {
   font-family: 'DM Mono', monospace;
   font-size: 0.74rem;
@@ -142,6 +149,10 @@
   border-radius: 8px;
   transition: background 0.2s, border-color 0.2s;
   flex-shrink: 0;
+}
+
+[data-theme="light"] .footer__social-icon {
+  background: rgba(0,0,0,0.04);
 }
 .footer__social-link:hover .footer__social-icon {
   background: rgba(0,229,160,0.08);

@@ -75,6 +75,13 @@
   background-clip: text;
 }
 
+[data-theme="light"] .exp-card__role {
+  background: linear-gradient(135deg, #0f0f1a 50%, #3a3a60);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .exp-card__period {
   font-family: 'DM Mono', monospace;
   font-size: 0.7rem;
@@ -106,10 +113,13 @@
   gap: 0.7rem;
   font-size: 0.91rem;
   line-height: 1.75;
-  color: #8888aa;
+  color: var(--body-text-soft, #8888aa);
   transition: color 0.2s;
 }
-.exp-card:hover .exp-card__bullets li { color: #a0a0c0; }
+.exp-card:hover .exp-card__bullets li { color: var(--body-text, #a0a0c0); }
+
+[data-theme="light"] .exp-card__bullets li { color: var(--body-text-soft); }
+[data-theme="light"] .exp-card:hover .exp-card__bullets li { color: var(--body-text); }
 
 .exp-card__bullets li::before {
   content: '▸';

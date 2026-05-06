@@ -44,7 +44,7 @@ const CERTIFICATIONS = [
     icon: '🏅',
     name: 'IBM Developer Skills Certificate',
     issuer: 'MERN Full Stack Development',
-    period: 'Sep 2025 – Mar 2026',
+    period: 'Sep 2025 – April 2026',
   },
 ];
 

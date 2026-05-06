@@ -82,6 +82,13 @@
   background-clip: text;
 }
 
+[data-theme="light"] .edu-card__degree {
+  background: linear-gradient(135deg, #0f0f1a 50%, #3a3a60);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .edu-card__school {
   font-family: 'DM Mono', monospace;
   font-size: 0.8rem;
@@ -238,6 +245,13 @@
   background-clip: text;
 }
 
+[data-theme="light"] .school-card__level {
+  background: linear-gradient(135deg, #0f0f1a 50%, #3a3a60);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .school-card__school {
   font-family: 'Inter', sans-serif;
   font-size: 0.82rem;
@@ -267,6 +281,10 @@
   background: rgba(255, 255, 255, 0.06);
   border-radius: 100px;
   overflow: hidden;
+}
+
+[data-theme="light"] .school-card__score-bar-wrap {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .school-card__score-bar {

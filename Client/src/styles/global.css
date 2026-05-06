@@ -4,7 +4,7 @@
 /* ===== RESET ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ===== DESIGN TOKENS ===== */
+/* ===== DESIGN TOKENS — DARK (default) ===== */
 :root {
   --bg:           #060610;
   --surface:      #0c0c18;
@@ -22,6 +22,10 @@
   --muted:  #64648a;
   --subtle: #9090b8;
 
+  /* body text colours used in components */
+  --body-text:      #a0a0c0;
+  --body-text-soft: #8080a8;
+
   --glow-green:  rgba(0,229,160,0.18);
   --glow-purple: rgba(124,92,252,0.15);
   --glow-blue:   rgba(56,189,248,0.15);
@@ -32,6 +36,33 @@
 
   --ease-spring: cubic-bezier(0.34,1.56,0.64,1);
   --ease-out:    cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ===== DESIGN TOKENS — LIGHT ===== */
+[data-theme="light"] {
+  --bg:           #f4f4fb;
+  --surface:      #eaeaf4;
+  --card:         #ffffff;
+  --card-hover:   #f0f0fa;
+  --border:       rgba(0,0,0,0.09);
+  --border-hover: rgba(0,168,112,0.4);
+
+  --accent:   #007a52;
+  --accent2:  #5530cc;
+  --accent3:  #c0397a;
+  --blue:     #0284c7;
+
+  --text:     #0f0f1a;
+  --muted:    #5a5a80;
+  --subtle:   #444466;
+
+  /* body text colours used in components */
+  --body-text:      #2a2a40;
+  --body-text-soft: #4a4a68;
+
+  --glow-green:  rgba(0,122,82,0.10);
+  --glow-purple: rgba(85,48,204,0.08);
+  --glow-blue:   rgba(2,132,199,0.08);
 }
 
 /* ===== BASE ===== */
@@ -45,6 +76,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -98,6 +130,13 @@ section { padding: 6rem 0; }
   margin-bottom: 3rem;
   line-height: 1.05;
   background: linear-gradient(140deg, #fff 30%, rgba(255,255,255,0.5));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+[data-theme="light"] .section-title {
+  background: linear-gradient(140deg, #0f0f1a 30%, #3a3a60);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -176,6 +215,12 @@ section { padding: 6rem 0; }
   white-space: nowrap;
 }
 .tag:hover { background: rgba(255,255,255,0.08); transform: translateY(-1px); }
+
+[data-theme="light"] .tag {
+  background: rgba(0,0,0,0.04);
+  color: var(--subtle);
+}
+[data-theme="light"] .tag:hover { background: rgba(0,0,0,0.08); }
 
 .tag-green  { background: rgba(0,229,160,0.07);   color: var(--accent);  border-color: rgba(0,229,160,0.22); }
 .tag-purple { background: rgba(124,92,252,0.07);  color: var(--accent2); border-color: rgba(124,92,252,0.22); }

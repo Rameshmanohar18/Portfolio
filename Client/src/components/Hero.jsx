@@ -57,9 +57,10 @@ export default function Hero() {
           </p>
 
           <p className="hero__desc">
-            Result-driven developer with 2+ years building scalable, high-performance
-            web applications. Specialized in MERN stack, real-time systems, and
-            blockchain integrations.
+            Full Stack Developer with 2+ years building production-grade MERN stack applications — 
+            cutting load times by 35%, boosting API performance by 25%, and shipping features that 
+            scale. I turn complex requirements into clean, maintainable code and thrive in fast-moving 
+            teams where ownership and impact matter.
           </p>
 
           <div className="hero__cta">
