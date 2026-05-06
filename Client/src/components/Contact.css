@@ -1,0 +1,226 @@
+/* ===== CONTACT SECTION ===== */
+.contact-section {
+  background: var(--surface);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient glow */
+.contact-section::before {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 250px;
+  background: radial-gradient(ellipse, rgba(0,229,160,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.contact-section::after {
+  content: '';
+  position: absolute;
+  top: 10%; right: -100px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ===== TWO-COLUMN LAYOUT ===== */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+/* ===== LEFT COLUMN ===== */
+.contact-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  position: sticky;
+  top: 100px;
+}
+
+/* Override section-title margin for left column */
+.contact-left .section-title {
+  margin-bottom: 1.2rem;
+}
+
+.contact-desc {
+  font-size: 0.95rem;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  max-width: 380px;
+}
+
+.contact-cta {
+  margin-bottom: 1.8rem;
+  align-self: flex-start;
+}
+
+/* Status badge */
+.contact-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  background: rgba(0,229,160,0.06);
+  border: 1px solid rgba(0,229,160,0.2);
+  padding: 0.38rem 1rem;
+  border-radius: 100px;
+}
+
+.contact-status__dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  animation: status-pulse 2.2s ease infinite;
+  flex-shrink: 0;
+}
+@keyframes status-pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:0.4; transform:scale(0.7); }
+}
+
+/* ===== RIGHT COLUMN ===== */
+.contact-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ===== CONTACT CARD ===== */
+.contact-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.3rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  color: var(--text);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s var(--ease-spring),
+              background 0.3s, box-shadow 0.3s;
+}
+
+/* Shimmer sweep */
+.contact-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 55%; height: 100%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%);
+  transition: left 0.55s ease;
+  pointer-events: none;
+}
+.contact-item:hover::before { left: 160%; }
+
+/* Bottom accent line */
+.contact-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+/* Per-accent hover colours */
+.contact-item--green:hover  { border-color: rgba(0,229,160,0.45);   box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,229,160,0.1); }
+.contact-item--blue:hover   { border-color: rgba(56,189,248,0.45);  box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(56,189,248,0.1); }
+.contact-item--purple:hover { border-color: rgba(124,92,252,0.45);  box-shadow: 0 16px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(124,92,252,0.1); }
+
+.contact-item--green::after  { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.contact-item--blue::after   { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+.contact-item--purple::after { background: linear-gradient(90deg, transparent, var(--accent2), transparent); }
+
+.contact-item:hover { transform: translateX(6px); background: var(--card-hover); }
+.contact-item:hover::after { opacity: 0.6; }
+
+/* Icon box */
+.contact-item__icon {
+  width: 46px; height: 46px;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  transition: transform 0.3s var(--ease-spring), background 0.3s, border-color 0.3s;
+}
+.contact-item__icon--green  { background: rgba(0,229,160,0.07); }
+.contact-item__icon--blue   { background: rgba(56,189,248,0.07); }
+.contact-item__icon--purple { background: rgba(124,92,252,0.07); }
+
+.contact-item--green:hover  .contact-item__icon { background: rgba(0,229,160,0.14);  border-color: rgba(0,229,160,0.3);   transform: scale(1.1) rotate(-6deg); }
+.contact-item--blue:hover   .contact-item__icon { background: rgba(56,189,248,0.14); border-color: rgba(56,189,248,0.3);  transform: scale(1.1) rotate(-6deg); }
+.contact-item--purple:hover .contact-item__icon { background: rgba(124,92,252,0.14); border-color: rgba(124,92,252,0.3);  transform: scale(1.1) rotate(-6deg); }
+
+/* Body */
+.contact-item__body { flex: 1; min-width: 0; }
+
+.contact-item__label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.25rem;
+}
+
+.contact-item__value {
+  font-size: 0.86rem;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+.contact-item--green:hover  .contact-item__value { color: var(--accent); }
+.contact-item--blue:hover   .contact-item__value { color: var(--blue); }
+.contact-item--purple:hover .contact-item__value { color: var(--accent2); }
+
+/* Arrow */
+.contact-item__arrow {
+  font-size: 0.9rem;
+  color: var(--muted);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.25s, transform 0.25s var(--ease-spring), color 0.2s;
+}
+.contact-item:hover .contact-item__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+.contact-item--green:hover  .contact-item__arrow { color: var(--accent); }
+.contact-item--blue:hover   .contact-item__arrow { color: var(--blue); }
+.contact-item--purple:hover .contact-item__arrow { color: var(--accent2); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .contact-left {
+    position: static;
+    align-items: flex-start;
+  }
+  .contact-desc { max-width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .contact-item { padding: 1.1rem 1.2rem; }
+  .contact-item__value { font-size: 0.8rem; }
+  .contact-item__icon { width: 40px; height: 40px; font-size: 1.2rem; }
+}
