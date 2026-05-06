@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import './Projects.css';
 
@@ -81,11 +82,27 @@ export default function Projects() {
 
 function ProjectCard({ project, index, delay }) {
   const { ref, visible } = useReveal();
+  const [expanded, setExpanded] = useState(false);
+
+  /* 3-D tilt on mouse move */
+  const handleTilt = (e) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 14;
+    const y = ((e.clientY - rect.top)  / rect.height - 0.5) * -14;
+    card.style.transform = `perspective(900px) rotateX(${y}deg) rotateY(${x}deg) translateY(-8px) scale(1.01)`;
+  };
+  const resetTilt = (e) => {
+    e.currentTarget.style.transform = '';
+  };
+
   return (
     <div
       ref={ref}
-      className={`project-card project-card--${project.accent} reveal ${visible ? 'visible' : ''}`}
+      className={`project-card project-card--${project.accent} reveal ${visible ? 'visible' : ''} ${expanded ? 'project-card--expanded' : ''}`}
       style={{ transitionDelay: `${delay}ms` }}
+      onMouseMove={handleTilt}
+      onMouseLeave={resetTilt}
     >
       {/* Glow orb */}
       <div className="project-card__orb" />
@@ -129,8 +146,10 @@ function ProjectCard({ project, index, delay }) {
       {/* Divider */}
       <div className={`project-card__divider project-card__divider--${project.accent}`} />
 
-      {/* Description */}
-      <p className="project-card__desc">{project.description}</p>
+      {/* Description — collapsed by default, expand on click */}
+      <p className={`project-card__desc ${expanded ? 'project-card__desc--full' : ''}`}>
+        {project.description}
+      </p>
 
       {/* Tech tags */}
       <div className="project-card__tags">
@@ -140,6 +159,15 @@ function ProjectCard({ project, index, delay }) {
           </span>
         ))}
       </div>
+
+      {/* Expand toggle */}
+      <button
+        className={`project-card__toggle project-card__toggle--${project.accent}`}
+        onClick={() => setExpanded(v => !v)}
+        aria-label={expanded ? 'Collapse' : 'Read more'}
+      >
+        {expanded ? '↑ Show less' : '↓ Read more'}
+      </button>
     </div>
   );
 }

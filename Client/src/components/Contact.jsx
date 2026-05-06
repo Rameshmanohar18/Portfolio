@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import './Contact.css';
 
@@ -83,6 +84,19 @@ export default function Contact() {
 
 function ContactItem({ contact, delay }) {
   const { ref, visible } = useReveal();
+  const [copied, setCopied] = useState(false);
+
+  const handleClick = (e) => {
+    /* Copy email/phone to clipboard, open links normally */
+    if (!contact.href.startsWith('http')) {
+      e.preventDefault();
+      navigator.clipboard.writeText(contact.value).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    }
+  };
+
   return (
     <a
       ref={ref}
@@ -91,15 +105,20 @@ function ContactItem({ contact, delay }) {
       rel={contact.href.startsWith('http') ? 'noreferrer' : undefined}
       className={`contact-item contact-item--${contact.accent} reveal ${visible ? 'visible' : ''}`}
       style={{ transitionDelay: `${delay}ms` }}
+      onClick={handleClick}
     >
       <div className={`contact-item__icon contact-item__icon--${contact.accent}`}>
-        {contact.icon}
+        {copied ? '✓' : contact.icon}
       </div>
       <div className="contact-item__body">
         <div className="contact-item__label">{contact.label}</div>
-        <div className="contact-item__value">{contact.value}</div>
+        <div className="contact-item__value">
+          {copied ? 'Copied to clipboard!' : contact.value}
+        </div>
       </div>
-      <span className="contact-item__arrow">→</span>
+      <span className="contact-item__arrow">
+        {contact.href.startsWith('http') ? '↗' : copied ? '✓' : '⎘'}
+      </span>
     </a>
   );
 }

@@ -1,17 +1,16 @@
+import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import './Skills.css';
 
 const SKILLS = [
-  { category: 'Languages',      icon: '⌨️', items: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3'] },
-  { category: 'Frontend',       icon: '🎨', items: ['React.js', 'Redux Toolkit', 'Tailwind CSS', 'Material UI'] },
-  { category: 'Backend',        icon: '⚙️', items: ['Node.js', 'Express.js', 'Socket.io'] },
-  { category: 'Database',       icon: '🗄️', items: ['MongoDB', 'MySQL', 'Firebase'] },
-  { category: 'Tools',          icon: '🛠️', items: ['Git', 'GitHub', 'Postman', 'Jira', 'VS Code'] },
-  { category: 'Testing & Build',icon: '🧪', items: ['Vitest', 'Webpack', 'ESLint', 'Prettier'] },
-  { category: 'API Integration',icon: '🔗', items: ['Axios', 'REST API', 'Rapid API'] },
+  { category: 'Languages',      icon: '⌨️', level: 90, color: 'green',  items: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3'] },
+  { category: 'Frontend',       icon: '🎨', level: 92, color: 'purple', items: ['React.js', 'Redux Toolkit', 'Tailwind CSS', 'Material UI'] },
+  { category: 'Backend',        icon: '⚙️', level: 85, color: 'green',  items: ['Node.js', 'Express.js', 'Socket.io'] },
+  { category: 'Database',       icon: '🗄️', level: 80, color: 'blue',   items: ['MongoDB', 'MySQL', 'Firebase'] },
+  { category: 'Tools',          icon: '🛠️', level: 88, color: 'purple', items: ['Git', 'GitHub', 'Postman', 'Jira', 'VS Code'] },
+  { category: 'Testing & Build',icon: '🧪', level: 75, color: 'blue',   items: ['Vitest', 'Webpack', 'ESLint', 'Prettier'] },
+  { category: 'API Integration',icon: '🔗', level: 87, color: 'green',  items: ['Axios', 'REST API', 'Rapid API'] },
 ];
-
-
 
 export default function Skills() {
   const { ref, visible } = useReveal();
@@ -35,14 +34,61 @@ export default function Skills() {
 
 function SkillCard({ skill, delay }) {
   const { ref, visible } = useReveal();
+  const [flipped, setFlipped] = useState(false);
+  const [copied, setCopied]   = useState(null);
+
+  const handleCopy = (item) => {
+    navigator.clipboard.writeText(item).then(() => {
+      setCopied(item);
+      setTimeout(() => setCopied(null), 1500);
+    });
+  };
+
   return (
-    <div ref={ref} className={`skill-card reveal ${visible ? 'visible' : ''}`} style={{ transitionDelay: `${delay}ms` }}>
-      <div className="skill-card__header">
-        <span className="skill-card__icon">{skill.icon}</span>
-        <span className="skill-card__cat">{skill.category}</span>
+    <div
+      ref={ref}
+      className={`skill-flip reveal ${visible ? 'visible' : ''} ${flipped ? 'skill-flip--flipped' : ''}`}
+      style={{ transitionDelay: `${delay}ms` }}
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+    >
+      {/* ── Front ── */}
+      <div className={`skill-card skill-card--front skill-card--${skill.color}`}>
+        <div className="skill-card__header">
+          <span className="skill-card__icon">{skill.icon}</span>
+          <span className="skill-card__cat">{skill.category}</span>
+        </div>
+        <div className="skill-card__tags">
+          {skill.items.map(item => (
+            <span key={item} className="tag">{item}</span>
+          ))}
+        </div>
+        <div className="skill-card__hint">hover to see level →</div>
       </div>
-      <div className="skill-card__tags">
-        {skill.items.map(item => <span key={item} className="tag">{item}</span>)}
+
+      {/* ── Back ── */}
+      <div className={`skill-card skill-card--back skill-card--${skill.color}`}>
+        <div className="skill-card__back-icon">{skill.icon}</div>
+        <div className="skill-card__back-cat">{skill.category}</div>
+        <div className="skill-card__back-level">{skill.level}%</div>
+        <div className="skill-card__bar-wrap">
+          <div
+            className={`skill-card__bar skill-card__bar--${skill.color}`}
+            style={{ '--bar-w': `${skill.level}%` }}
+          />
+        </div>
+        <div className="skill-card__back-tags">
+          {skill.items.map(item => (
+            <button
+              key={item}
+              className={`tag skill-tag ${copied === item ? 'skill-tag--copied' : ''}`}
+              onClick={() => handleCopy(item)}
+              title="Click to copy"
+            >
+              {copied === item ? '✓' : item}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useReveal from '../hooks/useReveal';
 import './Experience.css';
 
@@ -53,6 +53,10 @@ function SectionHeader({ label, title }) {
 
 function ExpCard({ exp, delay }) {
   const { ref, visible } = useReveal();
+  const [expanded, setExpanded] = useState(false);
+  const preview = exp.bullets.slice(0, 1);
+  const rest    = exp.bullets.slice(1);
+
   return (
     <div
       ref={ref}
@@ -67,9 +71,24 @@ function ExpCard({ exp, delay }) {
         {exp.company} · {exp.location}
       </div>
       <ul className="exp-card__bullets">
-        {exp.bullets.map((bullet, i) => (
+        {preview.map((bullet, i) => (
           <li key={i}>{bullet}</li>
         ))}
+        {rest.length > 0 && (
+          <>
+            <div className={`exp-card__extra ${expanded ? 'exp-card__extra--open' : ''}`}>
+              {rest.map((bullet, i) => (
+                <li key={i}>{bullet}</li>
+              ))}
+            </div>
+            <button
+              className="exp-card__toggle"
+              onClick={() => setExpanded(v => !v)}
+            >
+              {expanded ? '↑ Show less' : `↓ +${rest.length} more detail${rest.length > 1 ? 's' : ''}`}
+            </button>
+          </>
+        )}
       </ul>
     </div>
   );
