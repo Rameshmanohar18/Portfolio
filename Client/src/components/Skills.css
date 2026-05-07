@@ -2,6 +2,7 @@
   background: var(--surface);
   position: relative;
   overflow: hidden;
+  contain: layout style;
 }
 .skills-section::before {
   content: '';
@@ -19,12 +20,22 @@
   gap: 1.2rem;
 }
 
+/* Staggered reveal for grid children */
+.skills-grid > *:nth-child(1)  { transition-delay: 0.05s; }
+.skills-grid > *:nth-child(2)  { transition-delay: 0.10s; }
+.skills-grid > *:nth-child(3)  { transition-delay: 0.15s; }
+.skills-grid > *:nth-child(4)  { transition-delay: 0.20s; }
+.skills-grid > *:nth-child(5)  { transition-delay: 0.25s; }
+.skills-grid > *:nth-child(6)  { transition-delay: 0.30s; }
+.skills-grid > *:nth-child(7)  { transition-delay: 0.35s; }
+.skills-grid > *:nth-child(8)  { transition-delay: 0.40s; }
+
 /* ── 3-D flip wrapper ── */
 .skill-flip {
   perspective: 900px;
   height: 200px;
   cursor: pointer;
-  position: relative;        /* ← fixes absolute children escaping */
+  position: relative;
 }
 
 .skill-flip--flipped .skill-card--front { transform: rotateY(-180deg); }
@@ -38,7 +49,7 @@
   padding: 1.6rem;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: transform 0.55s cubic-bezier(0.4,0.2,0.2,1), box-shadow 0.3s;
+  transition: transform 0.58s var(--ease-out), box-shadow var(--transition-base);
   border: 1px solid var(--border);
   overflow: hidden;
 }
@@ -50,6 +61,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  /* Glass morphism */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .skill-card--front::before {
@@ -59,9 +73,14 @@
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity var(--transition-base);
 }
 .skill-flip:hover .skill-card--front::before { opacity: 1; }
+
+/* Hover: lift + glow + border brighten */
+.skill-flip:hover .skill-card--front {
+  box-shadow: var(--shadow-md);
+}
 
 /* Color accent top line on front */
 .skill-card--green.skill-card--front  { border-top: 2px solid rgba(0,229,160,0.4); }
@@ -76,16 +95,17 @@
 
 .skill-card__icon {
   font-size: 1.2rem;
-  transition: transform 0.3s var(--ease-spring);
+  transition: transform var(--transition-spring);
 }
 .skill-flip:hover .skill-card__icon { transform: scale(1.2) rotate(-8deg); }
 
 .skill-card__cat {
   font-family: 'DM Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   color: var(--accent);
   text-transform: uppercase;
   letter-spacing: 2px;
+  line-height: 1;
 }
 
 .skill-card__tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -109,11 +129,30 @@
   justify-content: center;
   gap: 0.5rem;
   text-align: center;
+  /* Glass morphism + inner glow */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.skill-card--green.skill-card--back  { border-color: rgba(0,229,160,0.3);   box-shadow: 0 0 30px rgba(0,229,160,0.12); }
-.skill-card--purple.skill-card--back { border-color: rgba(124,92,252,0.3);  box-shadow: 0 0 30px rgba(124,92,252,0.12); }
-.skill-card--blue.skill-card--back   { border-color: rgba(56,189,248,0.3);  box-shadow: 0 0 30px rgba(56,189,248,0.12); }
+/* Inner glow on back face */
+.skill-card--green.skill-card--back {
+  border-color: rgba(0,229,160,0.3);
+  box-shadow:
+    0 0 30px rgba(0,229,160,0.12),
+    inset 0 0 24px rgba(0,229,160,0.06);
+}
+.skill-card--purple.skill-card--back {
+  border-color: rgba(124,92,252,0.3);
+  box-shadow:
+    0 0 30px rgba(124,92,252,0.12),
+    inset 0 0 24px rgba(124,92,252,0.06);
+}
+.skill-card--blue.skill-card--back {
+  border-color: rgba(56,189,248,0.3);
+  box-shadow:
+    0 0 30px rgba(56,189,248,0.12),
+    inset 0 0 24px rgba(56,189,248,0.06);
+}
 
 .skill-card__back-icon {
   font-size: 1.8rem;
@@ -137,12 +176,13 @@
   font-weight: 800;
   font-size: 2rem;
   line-height: 1;
+  letter-spacing: -1px;
 }
 .skill-card--green.skill-card--back  .skill-card__back-level { color: var(--accent); }
 .skill-card--purple.skill-card--back .skill-card__back-level { color: var(--accent2); }
 .skill-card--blue.skill-card--back   .skill-card__back-level { color: var(--blue); }
 
-/* Proficiency bar */
+/* Proficiency bar — re-triggers on each flip via animation */
 .skill-card__bar-wrap {
   width: 80%;
   height: 5px;
@@ -155,13 +195,20 @@
   height: 100%;
   width: 0;
   border-radius: 100px;
-  animation: bar-grow 0.6s 0.1s var(--ease-out) forwards;
+  /* animation re-runs each time the back face becomes visible */
+  animation: bar-grow 0.65s 0.15s var(--ease-out) forwards;
 }
+
+/* Reset animation when card is flipped back and re-flipped */
+.skill-flip--flipped .skill-card__bar {
+  animation: bar-grow 0.65s 0.15s var(--ease-out) forwards;
+}
+
 @keyframes bar-grow { to { width: var(--bar-w); } }
 
-.skill-card__bar--green  { background: linear-gradient(90deg, var(--accent), #00c98a); box-shadow: 0 0 8px rgba(0,229,160,0.5); }
+.skill-card__bar--green  { background: linear-gradient(90deg, var(--accent), #00c98a);  box-shadow: 0 0 8px rgba(0,229,160,0.5); }
 .skill-card__bar--purple { background: linear-gradient(90deg, var(--accent2), #a78bfa); box-shadow: 0 0 8px rgba(124,92,252,0.5); }
-.skill-card__bar--blue   { background: linear-gradient(90deg, var(--blue), #7dd3fc);   box-shadow: 0 0 8px rgba(56,189,248,0.5); }
+.skill-card__bar--blue   { background: linear-gradient(90deg, var(--blue), #7dd3fc);    box-shadow: 0 0 8px rgba(56,189,248,0.5); }
 
 .skill-card__back-tags {
   display: flex;
@@ -177,7 +224,7 @@
   border: none;
   font-family: 'DM Mono', monospace;
   font-size: 0.68rem;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s, color 0.2s, box-shadow 0.2s;
+  transition: var(--transition-color), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 .skill-tag:hover {
   background: rgba(0,229,160,0.1);
@@ -185,6 +232,10 @@
   color: var(--accent);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,229,160,0.15);
+}
+.skill-tag:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .skill-tag--copied {
   background: rgba(0,229,160,0.18) !important;
