@@ -10,11 +10,11 @@ const STATS = [
 ];
 
 const ROLES = [
-  { label: 'Full Stack Developer', Icon: ZapIcon,     color: 'green'  },
-  { label: 'MERN Stack Engineer',  Icon: WrenchIcon,  color: 'purple' },
-  { label: 'Web3 Builder',         Icon: LinkIcon,    color: 'blue'   },
-  { label: 'React.js Developer',   Icon: ReactIcon,   color: 'green'  },
-  { label: 'Node.js Developer',    Icon: NodeIcon,    color: 'purple' },
+  { label: 'Full Stack Developer', Icon: ZapIcon,    color: 'green'  },
+  { label: 'MERN Stack Engineer',  Icon: WrenchIcon, color: 'purple' },
+  { label: 'Web3 Builder',         Icon: LinkIcon,   color: 'blue'   },
+  { label: 'React.js Developer',   Icon: ReactIcon,  color: 'green'  },
+  { label: 'Node.js Developer',    Icon: NodeIcon,   color: 'purple' },
 ];
 
 /* ── Animated node-graph canvas ── */
@@ -31,16 +31,14 @@ function NodeCanvas() {
     };
     resize();
     window.addEventListener('resize', resize);
-
     const N = 28;
     const nodes = Array.from({ length: N }, () => ({
-      x:  Math.random() * canvas.width,
-      y:  Math.random() * canvas.height,
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
-      r:  Math.random() * 2 + 1.5,
+      r: Math.random() * 2 + 1.5,
     }));
-
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       nodes.forEach(n => {
@@ -50,8 +48,8 @@ function NodeCanvas() {
       });
       for (let i = 0; i < N; i++) {
         for (let j = i + 1; j < N; j++) {
-          const dx   = nodes[i].x - nodes[j].x;
-          const dy   = nodes[i].y - nodes[j].y;
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < 140) {
             ctx.beginPath();
@@ -72,21 +70,49 @@ function NodeCanvas() {
       raf = requestAnimationFrame(draw);
     };
     draw();
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
-    };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); };
   }, []);
   return <canvas ref={canvasRef} className="hero__canvas" />;
 }
 
-/* ── Typewriter hook ── */
+/* ── Typewriter with delete + retype ── */
+function useRoleTyper(roles, typingSpeed = 70, deletingSpeed = 40, pauseMs = 1800) {
+  const [displayed, setDisplayed] = useState('');
+  const [roleIdx, setRoleIdx]     = useState(0);
+  const [phase, setPhase]         = useState('typing'); // 'typing' | 'pausing' | 'deleting'
+
+  useEffect(() => {
+    const role = roles[roleIdx].label;
+    let timeout;
+
+    if (phase === 'typing') {
+      if (displayed.length < role.length) {
+        timeout = setTimeout(() => setDisplayed(role.slice(0, displayed.length + 1)), typingSpeed);
+      } else {
+        timeout = setTimeout(() => setPhase('pausing'), pauseMs);
+      }
+    } else if (phase === 'pausing') {
+      setPhase('deleting');
+    } else if (phase === 'deleting') {
+      if (displayed.length > 0) {
+        timeout = setTimeout(() => setDisplayed(d => d.slice(0, -1)), deletingSpeed);
+      } else {
+        setRoleIdx(i => (i + 1) % roles.length);
+        setPhase('typing');
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [displayed, phase, roleIdx, roles, typingSpeed, deletingSpeed, pauseMs]);
+
+  return { displayed, roleIdx, phase };
+}
+
+/* ── Static typewriter (name only, no delete) ── */
 function useTypewriter(text, speed = 80, startDelay = 400) {
   const [displayed, setDisplayed] = useState('');
   const [done, setDone]           = useState(false);
   useEffect(() => {
-    setDisplayed('');
-    setDone(false);
+    setDisplayed(''); setDone(false);
     let i = 0;
     const delay = setTimeout(() => {
       const id = setInterval(() => {
@@ -101,20 +127,19 @@ function useTypewriter(text, speed = 80, startDelay = 400) {
   return { displayed, done };
 }
 
-/* ── Terminal coding widget ── */
+/* ── Terminal widget ── */
 const TERMINAL_LINES = [
-  { prefix: '$', text: 'git status',                      color: 'green'  },
+  { prefix: '$', text: 'git status',                       color: 'green'  },
   { prefix: '>', text: 'On branch main — 3 files changed', color: 'muted'  },
-  { prefix: '$', text: 'npm run build',                   color: 'green'  },
-  { prefix: '>', text: 'Build successful ✓ 1.2s',         color: 'accent' },
-  { prefix: '$', text: 'git push origin main',            color: 'green'  },
-  { prefix: '>', text: 'Deployed to production 🚀',       color: 'accent' },
+  { prefix: '$', text: 'npm run build',                    color: 'green'  },
+  { prefix: '>', text: 'Build successful ✓ 1.2s',          color: 'accent' },
+  { prefix: '$', text: 'git push origin main',             color: 'green'  },
+  { prefix: '>', text: 'Deployed to production 🚀',        color: 'accent' },
 ];
 
 function TerminalWidget() {
   const [lineIdx, setLineIdx] = useState(0);
   const [visible, setVisible] = useState([]);
-
   useEffect(() => {
     if (lineIdx >= TERMINAL_LINES.length) {
       const reset = setTimeout(() => { setLineIdx(0); setVisible([]); }, 3000);
@@ -148,41 +173,30 @@ function TerminalWidget() {
   );
 }
 
-/* ── Main Hero component ── */
-export default function Hero() {
-  const [roleIdx, setRoleIdx]   = useState(0);
-  const [fade, setFade]         = useState(true);
-  const [progress, setProgress] = useState(0);
-  const [paused, setPaused]     = useState(false);
-  const [tipIdx, setTipIdx]     = useState(null);
-  const pausedRef               = useRef(false);
-  const photoWrapRef            = useRef(null);
+/* ── Download icon ── */
+function DownloadIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  );
+}
 
-  const INTERVAL = 3000;
+/* ── Main Hero ── */
+export default function Hero() {
+  const [tipIdx, setTipIdx]     = useState(null);
+  const photoWrapRef            = useRef(null);
 
   const { displayed: typedFirst, done: firstDone } = useTypewriter('Ramesh',  90, 300);
   const { displayed: typedLast }                   = useTypewriter('Manohar', 90, firstDone ? 100 : 99999);
 
-  useEffect(() => { pausedRef.current = paused; }, [paused]);
-
-  useEffect(() => {
-    setProgress(0);
-    const tick = 30;
-    const step = (tick / INTERVAL) * 100;
-    const prog = setInterval(() => {
-      if (!pausedRef.current) setProgress(p => Math.min(p + step, 100));
-    }, tick);
-    const id = setInterval(() => {
-      if (pausedRef.current) return;
-      setFade(false);
-      setTimeout(() => {
-        setRoleIdx(i => (i + 1) % ROLES.length);
-        setProgress(0);
-        setFade(true);
-      }, 350);
-    }, INTERVAL);
-    return () => { clearInterval(id); clearInterval(prog); };
-  }, [roleIdx]);
+  /* Role typer with delete + retype */
+  const { displayed: roleText, roleIdx, phase } = useRoleTyper(ROLES);
+  const currentRole = ROLES[roleIdx];
+  const RoleIcon    = currentRole.Icon;
 
   /* 3-D parallax on photo */
   const handlePhotoMove = (e) => {
@@ -197,7 +211,7 @@ export default function Hero() {
     if (photoWrapRef.current) photoWrapRef.current.style.transform = '';
   };
 
-  /* Magnetic button effect */
+  /* Magnetic button */
   const handleMagnet = (e) => {
     const btn  = e.currentTarget;
     const rect = btn.getBoundingClientRect();
@@ -219,13 +233,10 @@ export default function Hero() {
       </div>
 
       <div className="hero__inner container">
-
-        {/* ── Single column content ── */}
         <div className="hero__content">
 
-          {/* ── Top row: photo + name side by side ── */}
+          {/* ── Top row: photo + name ── */}
           <div className="hero__top-row">
-            {/* Photo */}
             <div
               className="hero__photo-wrap"
               ref={photoWrapRef}
@@ -235,63 +246,43 @@ export default function Hero() {
               <div className="hero__photo-ring hero__photo-ring--outer" />
               <div className="hero__photo-ring hero__photo-ring--inner" />
               <div className="hero__photo-glow" />
-              <img
-                src="/avatar.jpeg"
-                alt="Ramesh Manohar"
-                className="hero__photo"
-              />
+              <img src="/avatar.jpeg" alt="Ramesh Manohar" className="hero__photo" />
               <span className="hero__badge-float hero__badge-float--1">React.js</span>
               <span className="hero__badge-float hero__badge-float--2">Node.js</span>
-              <span className="hero__badge-float hero__badge-float--3">Javascript</span>
+              <span className="hero__badge-float hero__badge-float--3">JavaScript</span>
             </div>
- 
-            {/* Name + badge */}
+
             <div className="hero__name-block">
               <div className="hero__badge">
                 <span className="hero__badge-dot" />
-                Available for full-time opportunities in Full stack web development &amp; Collaborations
+                Available for full-time opportunities &amp; Collaborations
               </div>
-
               <h1 className="hero__name">
                 <span>{typedFirst}</span>
                 {!firstDone && <span className="hero__cursor">|</span>}
                 {firstDone && (
-                  <>
-                    {' '}
-                    <span className="hero__name-accent">{typedLast}</span>
-                    <span className="hero__cursor">|</span>
-                  </>
+                  <>{' '}<span className="hero__name-accent">{typedLast}</span><span className="hero__cursor">|</span></>
                 )}
               </h1>
             </div>
           </div>
 
-          {/* ── Role switcher ── */}
+          {/* ── Role typer with delete + retype ── */}
           <div className="hero__roles">
-            <div
-              className={`hero__role-pill hero__role-pill--${ROLES[roleIdx].color} ${fade ? 'hero__role-pill--in' : 'hero__role-pill--out'} ${paused ? 'hero__role-pill--paused' : ''}`}
-              onMouseEnter={() => setPaused(true)}
-              onMouseLeave={() => setPaused(false)}
-            >
-              <span className="hero__role-icon"><ROLES[roleIdx].Icon size={16} /></span>
-              <span className="hero__role-label">{ROLES[roleIdx].label}</span>
-              {paused && <span className="hero__role-pause-hint">⏸ hover to pause</span>}
-              <span className="hero__role-bar">
-                <span className="hero__role-bar-fill" style={{ width: `${progress}%` }} />
+            <div className={`hero__role-pill hero__role-pill--${currentRole.color}`}>
+              <span className="hero__role-icon"><RoleIcon size={16} /></span>
+              <span className="hero__role-label">
+                {roleText}
+                <span className={`hero__role-cursor ${phase === 'pausing' ? 'hero__role-cursor--blink' : ''}`}>|</span>
               </span>
             </div>
 
             <div className="hero__role-dots">
               {ROLES.map((r, i) => (
-                <button
+                <span
                   key={i}
                   className={`hero__role-dot hero__role-dot--${r.color} ${i === roleIdx ? 'hero__role-dot--active' : ''}`}
-                  onClick={() => {
-                    setFade(false);
-                    setTimeout(() => { setRoleIdx(i); setProgress(0); setFade(true); }, 350);
-                  }}
-                  aria-label={r.label}
-                  title={r.label}
+                  aria-hidden="true"
                 />
               ))}
             </div>
@@ -305,6 +296,7 @@ export default function Hero() {
             impact matter.
           </p>
 
+          {/* ── CTA with Resume Download ── */}
           <div className="hero__cta">
             <a
               href="#projects"
@@ -318,6 +310,16 @@ export default function Hero() {
               onMouseMove={handleMagnet}
               onMouseLeave={handleMagnetLeave}
             >Get In Touch</a>
+            <a
+              href="/Ramesh_M_MERN_Stack_Dev_2YOE.pdf"
+              download
+              className="btn btn-resume"
+              onMouseMove={handleMagnet}
+              onMouseLeave={handleMagnetLeave}
+              aria-label="Download Resume"
+            >
+              <DownloadIcon /> Resume
+            </a>
           </div>
 
           <div className="hero__stats">
@@ -339,14 +341,10 @@ export default function Hero() {
 
           <TerminalWidget />
         </div>
-
       </div>
 
-      {/* Scroll hint */}
       <div className="hero__scroll">
-        <div className="hero__scroll-mouse">
-          <div className="hero__scroll-wheel" />
-        </div>
+        <div className="hero__scroll-mouse"><div className="hero__scroll-wheel" /></div>
         <span className="hero__scroll-label">scroll</span>
       </div>
     </section>

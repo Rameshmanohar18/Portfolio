@@ -445,6 +445,38 @@
   animation: fadeUp 0.7s 0.4s ease both;
 }
 
+/* Resume download button */
+.btn-resume {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(0,229,160,0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.btn-resume:hover {
+  background: rgba(0,229,160,0.08);
+  border-color: var(--accent);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-md), 0 0 0 1px rgba(0,229,160,0.15);
+}
+[data-theme="light"] .btn-resume { border-color: rgba(0,122,82,0.4); color: var(--accent); }
+
+/* Role typer cursor */
+.hero__role-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  background: currentColor;
+  margin-left: 2px;
+  border-radius: 1px;
+  vertical-align: middle;
+  opacity: 1;
+}
+.hero__role-cursor--blink {
+  animation: cursor-blink 0.9s step-end infinite;
+}
+
 /* Stats */
 .hero__stats {
   display: flex;

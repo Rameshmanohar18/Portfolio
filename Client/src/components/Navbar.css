@@ -164,15 +164,20 @@
   background: var(--card);
   border: 1px solid var(--border);
   cursor: pointer;
-  font-size: 1rem;
+  color: #f0e060; /* sun yellow — visible on dark bg */
   transition: background var(--transition-base), border-color var(--transition-base),
-              transform var(--transition-spring), box-shadow var(--transition-base);
+              transform var(--transition-spring), box-shadow var(--transition-base),
+              color var(--transition-base);
 }
 .theme-toggle:hover {
   border-color: var(--accent);
   background: var(--card-hover);
   transform: rotate(20deg) scale(1.1);
   box-shadow: 0 0 14px var(--glow-green);
+}
+/* In light mode show a dark moon icon */
+[data-theme="light"] .theme-toggle {
+  color: #3a3a60;
 }
 /* Refined focus ring */
 .theme-toggle:focus-visible {

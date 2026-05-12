@@ -7,6 +7,7 @@ const PROJECTS = [
     icon: '🎰',
     name: 'House of Plinko',
     accent: 'green',
+    category: 'Blockchain',
     methodology: 'Scrum · Agile',
     featured: true,
     liveUrl: null,
@@ -24,6 +25,7 @@ const PROJECTS = [
     icon: '🖼️',
     name: 'WOR-NFT Marketplace',
     accent: 'purple',
+    category: 'Blockchain',
     methodology: null,
     featured: false,
     liveUrl: null,
@@ -41,6 +43,7 @@ const PROJECTS = [
     icon: '⚽',
     name: 'Live Scores',
     accent: 'blue',
+    category: 'Full Stack',
     methodology: null,
     featured: false,
     liveUrl: null,
@@ -51,13 +54,14 @@ const PROJECTS = [
       { label: 'Type', value: 'Sports Tracker' },
     ],
     description:
-      "A live score tracking platform where users can view live scores, scheduled matches, and completed results for nine sports including Soccer, Tennis, Volleyball, Badminton, Golf, and Basketball. Utilizes Rapid API for instant updates. Users can monitor team and player performances, follow commentary, and watch live games.",
+      'A live score tracking platform where users can view live scores, scheduled matches, and completed results for nine sports including Soccer, Tennis, Volleyball, Badminton, Golf, and Basketball. Utilizes Rapid API for instant updates. Users can monitor team and player performances, follow commentary, and watch live games.',
     tech: ['React.js', 'Node.js', 'Express.js', 'MongoDB', 'Socket.io', 'Rapid API', 'Axios'],
   },
   {
     icon: '✅',
     name: 'Habit Tracking App',
     accent: 'green',
+    category: 'Frontend',
     methodology: null,
     featured: false,
     liveUrl: 'https://habit-tracking-app-nokr.vercel.app/',
@@ -69,16 +73,13 @@ const PROJECTS = [
     ],
     description:
       'A habit tracking application that helps users build and maintain daily habits. Users can create, track, and monitor their habits with a clean and intuitive interface. Designed to encourage consistency and productivity through visual progress tracking.',
-    tech: [
-      'React.js', 'JavaScript', 'CSS', 'Vercel',
-      'Custom Hooks', 
-      'LocalStorage', 'Responsive Design',
-    ],
+    tech: ['React.js', 'JavaScript', 'CSS', 'Vercel', 'Custom Hooks', 'LocalStorage', 'Responsive Design'],
   },
   {
     icon: '🗂️',
     name: 'Portfolio',
     accent: 'purple',
+    category: 'Frontend',
     methodology: null,
     featured: false,
     liveUrl: 'https://portfolio-g6x7.vercel.app/',
@@ -90,14 +91,19 @@ const PROJECTS = [
     ],
     description:
       'A personal portfolio website showcasing my projects, skills, and experience as a full-stack developer. Built with React.js and features smooth animations, a responsive layout, and a modern design to highlight my work and professional background.',
-    tech: [
-      'React.js', 'JavaScript', 'CSS', 'Vercel','LocalStorage','Responsive Design',
-    ],
+    tech: ['React.js', 'JavaScript', 'CSS', 'Vercel', 'LocalStorage', 'Responsive Design'],
   },
 ];
 
+const FILTERS = ['All', 'Frontend', 'Full Stack', 'Blockchain'];
+
 export default function Projects() {
   const { ref, visible } = useReveal();
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  const filtered = activeFilter === 'All'
+    ? PROJECTS
+    : PROJECTS.filter(p => p.category === activeFilter);
 
   return (
     <section id="projects" className="projects-section">
@@ -110,11 +116,29 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="projects-grid">
-          {PROJECTS.map((project, i) => (
-            <ProjectCard key={project.name} project={project} index={i} delay={i * 130} />
+        {/* ── Filter tabs ── */}
+        <div className="projects-filters">
+          {FILTERS.map(f => (
+            <button
+              key={f}
+              className={`projects-filter-btn ${activeFilter === f ? 'projects-filter-btn--active' : ''}`}
+              onClick={() => setActiveFilter(f)}
+            >
+              {f}
+              {activeFilter === f && <span className="projects-filter-btn__dot" />}
+            </button>
           ))}
         </div>
+
+        <div className="projects-grid">
+          {filtered.map((project, i) => (
+            <ProjectCard key={project.name} project={project} index={i} delay={i * 100} />
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <p className="projects-empty">No projects in this category yet.</p>
+        )}
       </div>
     </section>
   );
@@ -124,7 +148,6 @@ function ProjectCard({ project, index, delay }) {
   const { ref, visible } = useReveal();
   const [expanded, setExpanded] = useState(false);
 
-  /* 3-D tilt on mouse move */
   const handleTilt = (e) => {
     const card = e.currentTarget;
     const rect = card.getBoundingClientRect();
@@ -132,9 +155,7 @@ function ProjectCard({ project, index, delay }) {
     const y = ((e.clientY - rect.top)  / rect.height - 0.5) * -14;
     card.style.transform = `perspective(900px) rotateX(${y}deg) rotateY(${x}deg) translateY(-8px) scale(1.01)`;
   };
-  const resetTilt = (e) => {
-    e.currentTarget.style.transform = '';
-  };
+  const resetTilt = (e) => { e.currentTarget.style.transform = ''; };
 
   return (
     <div
@@ -144,28 +165,25 @@ function ProjectCard({ project, index, delay }) {
       onMouseMove={handleTilt}
       onMouseLeave={resetTilt}
     >
-      {/* Glow orb */}
       <div className="project-card__orb" />
 
-      {/* Top row */}
       <div className="project-card__top">
         <div className={`project-card__icon project-card__icon--${project.accent}`}>
           {project.icon}
         </div>
         <div className="project-card__badges">
-          {project.featured && (
-            <span className="project-card__featured">★ Featured</span>
-          )}
+          {project.featured && <span className="project-card__featured">★ Featured</span>}
+          <span className={`project-card__category project-card__category--${project.accent}`}>
+            {project.category}
+          </span>
           <span className={`project-card__num project-card__num--${project.accent}`}>
             {String(index + 1).padStart(2, '0')}
           </span>
         </div>
       </div>
 
-      {/* Name */}
       <h3 className="project-card__name">{project.name}</h3>
 
-      {/* Methodology */}
       {project.methodology && (
         <p className="project-card__method">
           <span className="project-card__method-icon">⚙</span>
@@ -173,7 +191,6 @@ function ProjectCard({ project, index, delay }) {
         </p>
       )}
 
-      {/* Stats row */}
       <div className="project-card__stats">
         {project.stats.map((s) => (
           <div key={s.label} className="project-card__stat">
@@ -183,24 +200,18 @@ function ProjectCard({ project, index, delay }) {
         ))}
       </div>
 
-      {/* Divider */}
       <div className={`project-card__divider project-card__divider--${project.accent}`} />
 
-      {/* Description — collapsed by default, expand on click */}
       <p className={`project-card__desc ${expanded ? 'project-card__desc--full' : ''}`}>
         {project.description}
       </p>
 
-      {/* Tech tags */}
       <div className="project-card__tags">
         {project.tech.map((t) => (
-          <span key={t} className={`tag tag-${project.accent}`}>
-            {t}
-          </span>
+          <span key={t} className={`tag tag-${project.accent}`}>{t}</span>
         ))}
       </div>
 
-      {/* Links */}
       {(project.liveUrl || project.githubUrl) && (
         <div className="project-card__links">
           {project.liveUrl && (
@@ -231,7 +242,6 @@ function ProjectCard({ project, index, delay }) {
         </div>
       )}
 
-      {/* Expand toggle */}
       <button
         className={`project-card__toggle project-card__toggle--${project.accent}`}
         onClick={() => setExpanded(v => !v)}
