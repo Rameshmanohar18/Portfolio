@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { SunIcon, MoonIcon } from './icons';
 import './Navbar.css';
 
 const NAV_LINKS = [
@@ -53,7 +54,7 @@ export default function Navbar({ theme, toggleTheme }) {
         <div className="navbar__brand">
           <img src="/avatar.jpeg" alt="Ramesh M" className="navbar__avatar" />
           <span className="navbar__logo">
-            RM<span className="navbar__logo-dot">.</span>dev
+            Ramesh<span className="navbar__logo-dot"></span>
           </span>
         </div>
 
@@ -82,7 +83,7 @@ export default function Navbar({ theme, toggleTheme }) {
             aria-label="Toggle theme"
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === 'dark' ? '☀️' : '🌙'}
+            {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
           </button>
 
           <button

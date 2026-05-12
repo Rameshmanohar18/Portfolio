@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
+import { GitHubIcon, LinkedInIcon, EmailIcon, MapPinIcon, ArrowUpIcon, HeartIcon } from './icons';
 import './Footer.css';
 
 const SOCIAL_LINKS = [
-  { label: 'GitHub',   href: 'https://github.com/Rameshmanohar18',          icon: '🐙' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/ramesh-m-758a111aa/', icon: '💼' },
-  { label: 'Email',    href: 'mailto:rameshmanohar2001m@gmail.com',          icon: '✉️' },
+  { label: 'GitHub',   href: 'https://github.com/Rameshmanohar18',          Icon: GitHubIcon   },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/ramesh-m-758a111aa/', Icon: LinkedInIcon },
+  { label: 'Email',    href: 'mailto:rameshmanohar2001m@gmail.com',          Icon: EmailIcon    },
 ];
 
 const NAV_LINKS = [
@@ -25,7 +26,7 @@ export default function Footer() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleRocket = () => {
+  const handleTop = () => {
     setLaunched(true);
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -43,12 +44,15 @@ export default function Footer() {
           {/* Brand column */}
           <div className="footer__brand">
             <div className="footer__logo">
-              RM<span className="footer__logo-dot">.</span>dev
+              Ramesh<span className="footer__logo-dot">.</span>dev
             </div>
             <p className="footer__tagline">
               Full Stack Developer · MERN Stack · Web3
             </p>
-            <p className="footer__location">📍 Chennai, Tamil Nadu</p>
+            <p className="footer__location">
+              <MapPinIcon size={14} />
+              Chennai, Tamil Nadu
+            </p>
           </div>
 
           {/* Navigation column */}
@@ -63,7 +67,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact column */}
+          {/* Connect column */}
           <div className="footer__col">
             <h4 className="footer__col-title">Connect</h4>
             <ul className="footer__social">
@@ -75,7 +79,7 @@ export default function Footer() {
                     target={l.href.startsWith('http') ? '_blank' : undefined}
                     rel={l.href.startsWith('http') ? 'noreferrer' : undefined}
                   >
-                    <span className="footer__social-icon">{l.icon}</span>
+                    <span className="footer__social-icon"><l.Icon size={16} /></span>
                     {l.label}
                   </a>
                 </li>
@@ -85,28 +89,26 @@ export default function Footer() {
 
         </div>
 
-        {/* Divider */}
         <div className="footer__divider" />
 
-        {/* Bottom bar */}
         <div className="footer__bottom">
           <p className="footer__copy">
             © {new Date().getFullYear()} Ramesh M. All rights reserved.
           </p>
           <p className="footer__made">
-            Built with <span className="footer__heart">♥</span> using React
+            Built with <span className="footer__heart"><HeartIcon size={13} /></span> using React
           </p>
         </div>
       </div>
 
-      {/* Rocket back-to-top */}
+      {/* Back-to-top */}
       <button
         className={`rocket-btn ${visible ? 'rocket-btn--visible' : ''} ${launched ? 'rocket-btn--launched' : ''}`}
-        onClick={handleRocket}
+        onClick={handleTop}
         aria-label="Back to top"
         title="Back to top"
       >
-        🚀
+        <ArrowUpIcon size={20} />
       </button>
     </footer>
   );

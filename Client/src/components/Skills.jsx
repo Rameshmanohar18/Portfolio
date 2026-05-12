@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import useReveal from '../hooks/useReveal';
+import { CodeIcon, MonitorIcon, ServerIcon, DatabaseIcon, ToolIcon, TestIcon, ApiIcon } from './icons';
 import './Skills.css';
 
 const SKILLS = [
-  { category: 'Languages',      icon: '⌨️', level: 90, color: 'green',  items: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3'] },
-  { category: 'Frontend',       icon: '🎨', level: 92, color: 'purple', items: ['React.js', 'Redux Toolkit', 'Tailwind CSS', 'Material UI'] },
-  { category: 'Backend',        icon: '⚙️', level: 85, color: 'green',  items: ['Node.js', 'Express.js', 'Socket.io'] },
-  { category: 'Database',       icon: '🗄️', level: 80, color: 'blue',   items: ['MongoDB', 'MySQL', 'Firebase'] },
-  { category: 'Tools',          icon: '🛠️', level: 88, color: 'purple', items: ['Git', 'GitHub', 'Postman', 'Jira', 'VS Code'] },
-  { category: 'Testing & Build',icon: '🧪', level: 75, color: 'blue',   items: ['Vitest', 'Webpack', 'ESLint', 'Prettier'] },
-  { category: 'API Integration',icon: '🔗', level: 87, color: 'green',  items: ['Axios', 'REST API', 'Rapid API'] },
+  { category: 'Languages',      Icon: CodeIcon,     level: 90, color: 'green',  items: ['JavaScript (ES6+)', 'TypeScript', 'HTML5', 'CSS3'] },
+  { category: 'Frontend',       Icon: MonitorIcon,  level: 92, color: 'purple', items: ['React.js', 'Redux Toolkit', 'Tailwind CSS', 'Material UI'] },
+  { category: 'Backend',        Icon: ServerIcon,   level: 85, color: 'green',  items: ['Node.js', 'Express.js', 'Socket.io'] },
+  { category: 'Database',       Icon: DatabaseIcon, level: 80, color: 'blue',   items: ['MongoDB', 'MySQL', 'Firebase'] },
+  { category: 'Tools',          Icon: ToolIcon,     level: 88, color: 'purple', items: ['Git', 'GitHub', 'Postman', 'Jira', 'VS Code'] },
+  { category: 'Testing & Build',Icon: TestIcon,     level: 75, color: 'blue',   items: ['Vitest', 'Webpack', 'ESLint', 'Prettier'] },
+  { category: 'API Integration',Icon: ApiIcon,      level: 87, color: 'green',  items: ['Axios', 'REST API', 'Rapid API'] },
 ];
 
 export default function Skills() {
@@ -55,7 +56,7 @@ function SkillCard({ skill, delay }) {
       {/* ── Front ── */}
       <div className={`skill-card skill-card--front skill-card--${skill.color}`}>
         <div className="skill-card__header">
-          <span className="skill-card__icon">{skill.icon}</span>
+          <span className="skill-card__icon"><skill.Icon size={22} /></span>
           <span className="skill-card__cat">{skill.category}</span>
         </div>
         <div className="skill-card__tags">
@@ -68,7 +69,7 @@ function SkillCard({ skill, delay }) {
 
       {/* ── Back ── */}
       <div className={`skill-card skill-card--back skill-card--${skill.color}`}>
-        <div className="skill-card__back-icon">{skill.icon}</div>
+        <div className="skill-card__back-icon"><skill.Icon size={28} /></div>
         <div className="skill-card__back-cat">{skill.category}</div>
         <div className="skill-card__back-level">{skill.level}%</div>
         <div className="skill-card__bar-wrap">

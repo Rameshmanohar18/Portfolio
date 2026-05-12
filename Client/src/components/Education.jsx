@@ -1,4 +1,5 @@
 import useReveal from '../hooks/useReveal';
+import { GraduationIcon, BookIcon, SchoolIcon, AwardIcon } from './icons';
 import './Education.css';
 
 const EDUCATION = [
@@ -7,16 +8,14 @@ const EDUCATION = [
     school: 'KLN College of Engineering',
     cgpa: '7.8',
     period: '2021 – 2023',
-    icon: '🎓',
-    type: 'college',
+    Icon: GraduationIcon,
   },
   {
     degree: 'Bachelor of Computer Applications (BCA)',
     school: 'Thiagarajar College',
     cgpa: '8.59',
     period: '2018 – 2021',
-    icon: '🎓',
-    type: 'college',
+    Icon: GraduationIcon,
   },
 ];
 
@@ -27,7 +26,7 @@ const SCHOOLING = [
     location: 'Dindigul – 624005',
     percentage: '82%',
     year: '2018',
-    icon: '📚',
+    Icon: BookIcon,
   },
   {
     level: '10th Standard (SSLC)',
@@ -35,13 +34,13 @@ const SCHOOLING = [
     location: 'Dindigul – 624005',
     percentage: '84%',
     year: '2016',
-    icon: '🏫',
+    Icon: SchoolIcon,
   },
 ];
 
 const CERTIFICATIONS = [
   {
-    icon: '🏅',
+    Icon: AwardIcon,
     name: 'IBM Developer Skills Certificate',
     issuer: 'MERN Full Stack Development',
     period: 'Sep 2025 – April 2026',
@@ -58,17 +57,13 @@ export default function Education() {
           <h2 className={`section-title reveal ${visible ? 'visible' : ''}`}>Education</h2>
         </div>
 
-        {/* College / University */}
         <div className="edu-grid">
           {EDUCATION.map((edu, i) => (
             <EduCard key={edu.degree} edu={edu} delay={i * 100} />
           ))}
         </div>
 
-        {/* Schooling */}
         <SchoolingSection />
-
-        {/* Certifications */}
         <CertSection />
       </div>
     </section>
@@ -83,7 +78,7 @@ function EduCard({ edu, delay }) {
       className={`edu-card reveal ${visible ? 'visible' : ''}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      <div className="edu-card__icon">{edu.icon}</div>
+      <div className="edu-card__icon"><edu.Icon size={28} /></div>
       <div className="edu-card__degree">{edu.degree}</div>
       <div className="edu-card__school">{edu.school}</div>
       <div className="edu-card__meta">
@@ -125,11 +120,10 @@ function SchoolCard({ school, delay }) {
       className={`school-card reveal ${visible ? 'visible' : ''}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
-      {/* Glow orb */}
       <div className="school-card__orb" />
 
       <div className="school-card__top">
-        <div className="school-card__icon">{school.icon}</div>
+        <div className="school-card__icon"><school.Icon size={24} /></div>
         <span className="school-card__year">{school.year}</span>
       </div>
 
@@ -180,7 +174,7 @@ function CertCard({ cert }) {
   const { ref, visible } = useReveal();
   return (
     <div ref={ref} className={`cert-card reveal ${visible ? 'visible' : ''}`}>
-      <div className="cert-card__icon">{cert.icon}</div>
+      <div className="cert-card__icon"><cert.Icon size={24} /></div>
       <div>
         <div className="cert-card__name">{cert.name}</div>
         <div className="cert-card__issuer">

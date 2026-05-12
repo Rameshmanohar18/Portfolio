@@ -10,6 +10,23 @@ import Education from './components/Education';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
+/* ── Page Loader ── */
+function PageLoader({ done }) {
+  return (
+    <div className={`page-loader ${done ? 'page-loader--done' : ''}`} aria-hidden="true">
+      <div className="page-loader__inner">
+        <div className="page-loader__logo">
+          Ramesh<span className="page-loader__dot">.</span>dev
+        </div>
+        <div className="page-loader__bar-wrap">
+          <div className="page-loader__bar" />
+        </div>
+        <p className="page-loader__label">Loading portfolio…</p>
+      </div>
+    </div>
+  );
+}
+
 /* Wave SVG helper — reusable inline component */
 function Wave({ to, flip }) {
   return (
@@ -25,8 +42,17 @@ function Wave({ to, flip }) {
 }
 
 export default function App() {
-  const [theme, setTheme]       = useState(() => localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme]         = useState(() => localStorage.getItem('theme') || 'dark');
   const [scrollPct, setScrollPct] = useState(0);
+  const [loaderDone, setLoaderDone] = useState(false);
+  const [loaderHidden, setLoaderHidden] = useState(false);
+
+  /* ── Loader: hide after 2.2s ── */
+  useEffect(() => {
+    const t1 = setTimeout(() => setLoaderDone(true),   2200);
+    const t2 = setTimeout(() => setLoaderHidden(true), 2900); // after fade-out
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
 
   /* ── Scroll progress ── */
   useEffect(() => {
@@ -58,6 +84,9 @@ export default function App() {
 
   return (
     <>
+      {/* Page loader — unmounted from DOM after fade completes */}
+      {!loaderHidden && <PageLoader done={loaderDone} />}
+
       {/* Scroll progress bar */}
       <div className="scroll-progress" style={{ width: `${scrollPct}%` }} />
       <div className="cursor-spotlight" />

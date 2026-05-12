@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { ZapIcon, WrenchIcon, LinkIcon, ReactIcon, NodeIcon } from './icons';
 import './Hero.css';
 
 const STATS = [
@@ -9,11 +10,11 @@ const STATS = [
 ];
 
 const ROLES = [
-  { label: 'Full Stack Developer', icon: '⚡', color: 'green'  },
-  { label: 'MERN Stack Engineer',  icon: '🛠️', color: 'purple' },
-  { label: 'Web3 Builder',         icon: '🔗', color: 'blue'   },
-  { label: 'React.js Developer',   icon: '⚛️', color: 'green'  },
-  { label: 'Node.js Developer',    icon: '🟢', color: 'purple' },
+  { label: 'Full Stack Developer', Icon: ZapIcon,     color: 'green'  },
+  { label: 'MERN Stack Engineer',  Icon: WrenchIcon,  color: 'purple' },
+  { label: 'Web3 Builder',         Icon: LinkIcon,    color: 'blue'   },
+  { label: 'React.js Developer',   Icon: ReactIcon,   color: 'green'  },
+  { label: 'Node.js Developer',    Icon: NodeIcon,    color: 'purple' },
 ];
 
 /* ── Animated node-graph canvas ── */
@@ -159,8 +160,8 @@ export default function Hero() {
 
   const INTERVAL = 3000;
 
-  const { displayed: typedFirst, done: firstDone } = useTypewriter('Ramesh',   90, 300);
-  const { displayed: typedLast }                   = useTypewriter('Manohar',  90, firstDone ? 100 : 99999);
+  const { displayed: typedFirst, done: firstDone } = useTypewriter('Ramesh',  90, 300);
+  const { displayed: typedLast }                   = useTypewriter('Manohar', 90, firstDone ? 100 : 99999);
 
   useEffect(() => { pausedRef.current = paused; }, [paused]);
 
@@ -219,25 +220,51 @@ export default function Hero() {
 
       <div className="hero__inner container">
 
-        {/* ── Left: text content ── */}
+        {/* ── Single column content ── */}
         <div className="hero__content">
-          <div className="hero__badge">
-            <span className="hero__badge-dot" />
-            Available for opportunities &amp; Collaborations
-          </div>
 
-          {/* Typewriter name */}
-          <h1 className="hero__name">
-            <span>{typedFirst}</span>
-            {!firstDone && <span className="hero__cursor">|</span>}
-            {firstDone && (
-              <>
-                <br />
-                <span className="hero__name-accent">{typedLast}</span>
-                <span className="hero__cursor">|</span>
-              </>
-            )}
-          </h1>
+          {/* ── Top row: photo + name side by side ── */}
+          <div className="hero__top-row">
+            {/* Photo */}
+            <div
+              className="hero__photo-wrap"
+              ref={photoWrapRef}
+              onMouseMove={handlePhotoMove}
+              onMouseLeave={handlePhotoLeave}
+            >
+              <div className="hero__photo-ring hero__photo-ring--outer" />
+              <div className="hero__photo-ring hero__photo-ring--inner" />
+              <div className="hero__photo-glow" />
+              <img
+                src="/avatar.jpeg"
+                alt="Ramesh Manohar"
+                className="hero__photo"
+              />
+              <span className="hero__badge-float hero__badge-float--1">React.js</span>
+              <span className="hero__badge-float hero__badge-float--2">Node.js</span>
+              <span className="hero__badge-float hero__badge-float--3">Javascript</span>
+            </div>
+ 
+            {/* Name + badge */}
+            <div className="hero__name-block">
+              <div className="hero__badge">
+                <span className="hero__badge-dot" />
+                Available for full-time opportunities in Full stack web development &amp; Collaborations
+              </div>
+
+              <h1 className="hero__name">
+                <span>{typedFirst}</span>
+                {!firstDone && <span className="hero__cursor">|</span>}
+                {firstDone && (
+                  <>
+                    {' '}
+                    <span className="hero__name-accent">{typedLast}</span>
+                    <span className="hero__cursor">|</span>
+                  </>
+                )}
+              </h1>
+            </div>
+          </div>
 
           {/* ── Role switcher ── */}
           <div className="hero__roles">
@@ -246,7 +273,7 @@ export default function Hero() {
               onMouseEnter={() => setPaused(true)}
               onMouseLeave={() => setPaused(false)}
             >
-              <span className="hero__role-icon">{ROLES[roleIdx].icon}</span>
+              <span className="hero__role-icon"><ROLES[roleIdx].Icon size={16} /></span>
               <span className="hero__role-label">{ROLES[roleIdx].label}</span>
               {paused && <span className="hero__role-pause-hint">⏸ hover to pause</span>}
               <span className="hero__role-bar">
@@ -311,26 +338,6 @@ export default function Hero() {
           </div>
 
           <TerminalWidget />
-        </div>
-
-        {/* ── Right: avatar ── */}
-        <div
-          className="hero__photo-wrap"
-          ref={photoWrapRef}
-          onMouseMove={handlePhotoMove}
-          onMouseLeave={handlePhotoLeave}
-        >
-          <div className="hero__photo-ring hero__photo-ring--outer" />
-          <div className="hero__photo-ring hero__photo-ring--inner" />
-          <div className="hero__photo-glow" />
-          <img
-            src="/avatar.jpeg"
-            alt="Ramesh Manohar"
-            className="hero__photo"
-          />
-          <span className="hero__badge-float hero__badge-float--1">React.js</span>
-          <span className="hero__badge-float hero__badge-float--2">Node.js</span>
-          <span className="hero__badge-float hero__badge-float--3">Web3</span>
         </div>
 
       </div>
